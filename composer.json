@@ -1,0 +1,23 @@
+{
+  "name": "alexleotz/necta-results-scraper",
+  "description": "This package provides a PHP script that allows you to scrape students' results from the National Examinations Council of Tanzania (NECTA) website.",
+  "type": "library",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "Alex Leo",
+      "email": "leoalex175@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.0.0",
+    "symfony/http-client": "^6.2",
+    "symfony/browser-kit": "^6.2",
+    "symfony/css-selector": "^6.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "NectaResultScraper\\": "src/"
+    }
+  }
+}
