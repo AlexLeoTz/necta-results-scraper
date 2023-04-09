@@ -1,8 +1,6 @@
 <?php
-// Require the NectaResultScraper.php file.
-require_once('../NectaResultScraper.php');
+require_once('vendor/autoload.php');
 
-// Import the NectaResultScraper class.
 use NectaResultScraper\NectaResultScraper;
 
 // Call the static result method of the NectaResultScraper class with the index number string as the argument.
