@@ -2,7 +2,7 @@
 
 namespace NectaResultScraper;
 
-require_once '../vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
 use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\HttpClient\HttpClient;
@@ -122,7 +122,6 @@ class NectaResultScraper
          * and return a JSON-encoded error message with a status code of 500.
          */
         catch (Throwable $th) {
-            print_r($th);
             return json_encode([
                 'error' => $th->getMessage(),
                 'status_code' => 500
