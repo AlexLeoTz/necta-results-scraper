@@ -23,12 +23,11 @@ class NectaResultScraper
     {
         // Implementation of scrape method
         try {
-            // Initialize variables for student gender, division, points,subjects and source.
+            // Initialize variables for student gender, division, points,and subjects.
             $gender = "";
             $division = "";
             $points = "";
             $subjects = "";
-            $source = "";
             // Split the index number string into an array using '/' as the delimiter.
             $substrings = explode('/', $index_number);
             // Exam year
@@ -83,7 +82,7 @@ class NectaResultScraper
             $tables = $crawler->filter("table")->eq($index);
 
             // Use a callback function to process each row in the filtered tables
-            $tables->filter('tr')->each(function ($tr) use ($examination_number,$url, &$found, &$gender, &$division, &$points, &$subjects) {
+            $tables->filter('tr')->each(function ($tr) use ($examination_number, $url, &$found, &$gender, &$division, &$points, &$subjects) {
 
                 // Extract the data from each row and store it in an array
                 $row = array();
@@ -98,7 +97,6 @@ class NectaResultScraper
                     $division = $row[3];
                     $points = $row[2];
                     $subjects = $row[4];
-                    $source = $url;
                     $found = true;
                 }
             });
@@ -117,7 +115,7 @@ class NectaResultScraper
                 'division' => $division,
                 'points' => $points,
                 'subjects' => $subjects,
-                'source' => $source;
+                'source' => $url
             ]);
         }
         /**
