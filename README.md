@@ -6,7 +6,7 @@ This package provides a PHP script that allows you to scrape students' results f
 
 You can install this package using Composer:
 
-composer require alexleotz/necta-results-scraper
+```composer require alexleotz/necta-results-scraper```
 
 ## Usage
 
