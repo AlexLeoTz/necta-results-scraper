@@ -3,6 +3,7 @@
   "description": "This package provides a PHP script that allows you to scrape students' results from the National Examinations Council of Tanzania (NECTA) website.",
   "type": "library",
   "version": "1.0.0",
+  "license": "MIT",
   "authors": [
     {
       "name": "Alex Leo",
@@ -17,7 +18,7 @@
   },
   "autoload": {
     "psr-4": {
-      "AlexLeo\\NectaResultScraper\\": "src/"
+      "NectaResultScraper\\": "src/"
     }
   }
 }
