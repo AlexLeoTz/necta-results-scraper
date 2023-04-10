@@ -23,7 +23,7 @@ class NectaResultScraper
     {
         // Implementation of scrape method
         try {
-            // Initialize variables for student gender, division, points, and subjects.
+            // Initialize variables for student gender, division, points,subjects and source.
             $gender = "";
             $division = "";
             $points = "";
@@ -117,6 +117,7 @@ class NectaResultScraper
                 'division' => $division,
                 'points' => $points,
                 'subjects' => $subjects,
+                'source' => $source;
             ]);
         }
         /**
