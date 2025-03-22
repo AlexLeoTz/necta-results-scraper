@@ -4,6 +4,7 @@ namespace NectaResultScraper;
 
 require_once 'vendor/autoload.php';
 
+
 use Symfony\Component\BrowserKit\HttpBrowser;
 use Symfony\Component\HttpClient\HttpClient;
 use Throwable;
@@ -12,6 +13,7 @@ use Throwable;
  * Necta Result Scraper
  *
  * @author Alex Leo <loealex175@gmail.com>
+ * @contributor Issa Hakimu <issahakimuakida365@gmail.com>
  */
 class NectaResultScraper
 {
@@ -26,6 +28,9 @@ class NectaResultScraper
         try {
             if (!$this->isIndexNumberValid($indexNumber)) {
                 return ['error' => 'Invalid index number'];
+            }
+            if(!$this->isValidYearInIndexNumber($indexNumber)){
+                return ['error' => 'This package supports result scraping for years from 2015 to 2024'];
             } else {
                 if (strpos($indexNumber, '.') !== false) {
                     $substrings = explode('.', $indexNumber);
@@ -42,10 +47,14 @@ class NectaResultScraper
                 $result = [];
                 $browser = new HttpBrowser(HttpClient::create(['timeout' => 30]));
                 $crawler = $browser->request('GET', $url);
+
+                $schoolName = $this->getSchoolName($crawler, $schoolNumber);       
+
                 $tables = $crawler->filter("table")->eq($index);
                 $examinationNumber = $schoolNumber . "/" . $studentNumber;
 
-                $tables->filter('tr')->each(function ($tr) use ($examinationNumber, &$found, &$result, $url) {
+
+                $tables->filter('tr')->each(function ($tr) use ($examinationNumber, &$found, &$result, $url, $schoolName, $year) {
                     $row = [];
                     $tr->filter('td')->each(function ($td) use (&$row) {
                         $row[] = trim($td->text());
@@ -53,6 +62,7 @@ class NectaResultScraper
 
                     if (strtolower($row[0]) == $examinationNumber) {
                         $found = true;
+                        $indexNumber = $row[0] . '/' . $year;
                         $gender = $row[1];
                         $division = $row[3];
                         $points = $row[2];
@@ -62,6 +72,8 @@ class NectaResultScraper
                         $grades = $matches[2];
                         $subjectsGrades = array_combine($subjects, $grades);
                         $result = [
+                            'index_number' => $indexNumber,
+                            'secondary_school' => $schoolName,
                             'gender' => $gender,
                             'division' => $division,
                             'points' => $points,
@@ -101,9 +113,36 @@ class NectaResultScraper
         }
     }
 
+    private function getSchoolName($crawler, $schoolNumber): string
+{
+   
+    $schoolName = $crawler->filter('p')->eq(2)->text();
+    $schoolName = trim($schoolName);
+
+    
+    $schoolNumberForName = strtoupper($schoolNumber);
+    if (strpos($schoolName, $schoolNumberForName) !== false) {
+        $schoolName = str_replace($schoolNumberForName, '', $schoolName);
+    }
+
+    return trim($schoolName);
+}
+
+
     private function isIndexNumberValid(string $indexNumber): bool
     {
-        $regex = '/^S\d{4}\.\d{4}\.\d{4}$|^S\d{4}\/\d{4}\/\d{4}$/';
-        return preg_match($regex, $indexNumber) === 1;
+        $pattern = "/^[QPS]\d{4}\/\d{4}\/\d{4}$/";
+        return preg_match($pattern, $indexNumber) === 1;
+    }
+
+    private function isValidYearInIndexNumber(string $indexNumber) : bool {
+        $pattern = "/^[QPS]\d{4}\/\d{4}\/(\d{4})$/";
+        
+        if (preg_match($pattern, $indexNumber, $matches)) {
+            $year = (int) $matches[1];
+            return $year >= 2015;
+        }
+        
+        return false;
     }
 }
