@@ -48,7 +48,7 @@ class NectaResultScraper
                 $browser = new HttpBrowser(HttpClient::create(['timeout' => 30]));
                 $crawler = $browser->request('GET', $url);
 
-                $schoolName = $this->getSchoolName($crawler, $schoolNumber);       
+                $schoolName = $this->getSchoolName($crawler, $schoolNumber); 
 
                 $tables = $crawler->filter("table")->eq($index);
                 $examinationNumber = $schoolNumber . "/" . $studentNumber;
@@ -89,7 +89,7 @@ class NectaResultScraper
                         'error' => 'Result not found',
                         'status' => 404,
                         'source' => $url,
-                        'examination_number' => $examinationNumber,
+                        'examination_number' => $indexNumber,
                     ];
                 }
                 return $result;
@@ -114,19 +114,19 @@ class NectaResultScraper
     }
 
     private function getSchoolName($crawler, $schoolNumber): string
-{
-   
-    $schoolName = $crawler->filter('p')->eq(2)->text();
-    $schoolName = trim($schoolName);
-
+    {
+        $schoolNumberForName = strtoupper($schoolNumber);
     
-    $schoolNumberForName = strtoupper($schoolNumber);
-    if (strpos($schoolName, $schoolNumberForName) !== false) {
-        $schoolName = str_replace($schoolNumberForName, '', $schoolName);
+        if ($crawler->filter('p')->eq(2)->count() === 0) {
+            return '';
+        }
+    
+        $schoolName = trim($crawler->filter('p')->eq(2)->text());
+        $schoolName = str_ireplace($schoolNumberForName, '', $schoolName);
+    
+        return trim($schoolName);
     }
-
-    return trim($schoolName);
-}
+    
 
 
     private function isIndexNumberValid(string $indexNumber): bool
